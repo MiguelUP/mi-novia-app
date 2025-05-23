@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>¿Quieres mi novia?</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      margin: 0;
+      background-color: #222;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 40px;
+    }
+    button {
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+      position: relative;
+    }
+    #si {
+      background-color: #28a745;
+      color: white;
+    }
+    #si:hover {
+      background-color: #218838;
+    }
+    #no {
+      background-color: #dc3545;
+      color: white;
+      position: absolute;
+    }
+  </style>
+</head>
+<body>
+  <h1>¿Quieres mi novia?</h1>
+  <button id="si">Sí</button>
+  <button id="no">No</button>
+
+  <script>
+    const botonNo = document.getElementById('no');
+    const body = document.body;
+
+    // Función para mover el botón "No" a una posición aleatoria dentro de la ventana
+    function moverBoton() {
+      const anchoVentana = window.innerWidth;
+      const altoVentana = window.innerHeight;
+      const botonAncho = botonNo.offsetWidth;
+      const botonAlto = botonNo.offsetHeight;
+
+      // Posiciones aleatorias dentro del viewport (dejando margen para que no se salga)
+      const maxX = anchoVentana - botonAncho - 20;
+      const maxY = altoVentana - botonAlto - 20;
+
+      const nuevaX = Math.floor(Math.random() * maxX);
+      const nuevaY = Math.floor(Math.random() * maxY);
+
+      botonNo.style.left = nuevaX + 'px';
+      botonNo.style.top = nuevaY + 'px';
+    }
+
+    // Mover el botón "No" cuando el cursor pase sobre él
+    botonNo.addEventListener('mouseenter', moverBoton);
+
+    // También moverlo si alguien intenta hacer clic (por si pasa rápido)
+    botonNo.addEventListener('click', (e) => {
+      e.preventDefault(); // Evita que el botón "No" haga algo al clic
+      moverBoton();
+    });
+
+    // Inicialmente coloca el botón "No" en una posición fija cerca del botón "Sí"
+    function posicionInicial() {
+      botonNo.style.position = 'absolute';
+      botonNo.style.left = '160px';
+      botonNo.style.top = '50%';
+      botonNo.style.transform = 'translateY(-50%)';
+    }
+    posicionInicial();
+  </script>
+</body>
+</html>
