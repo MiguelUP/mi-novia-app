@@ -2,13 +2,11 @@
 <html lang="es">
 <head>
   <link rel="manifest" href="manifest.json">
-<link rel="icon" href="icono.png" type="image/png">
-<meta name="theme-color" content="#222" />
-
+  <link rel="icon" href="icono.png" type="image/png">
+  <meta name="theme-color" content="#222" />
   <meta charset="UTF-8" />
   <title>¿Quieres mi novia?</title>
   <style>
-    /* Corazones flotando */
     #corazones {
       position: fixed;
       top: 0;
@@ -28,7 +26,6 @@
       0% { transform: translateY(100vh) scale(1); opacity: 1; }
       100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
     }
-
     body {
       font-family: Arial, sans-serif;
       height: 100vh;
@@ -42,12 +39,10 @@
       text-align: center;
       position: relative;
     }
-
     h1 {
       margin-bottom: 20px;
       z-index: 10;
     }
-
     button {
       padding: 15px 30px;
       font-size: 1.2rem;
@@ -59,22 +54,14 @@
       position: relative;
       z-index: 10;
     }
-
-    #si {
-      background-color: #28a745;
-      color: white;
-    }
-    #si:hover {
-      background-color: #218838;
-    }
-
+    #si { background-color: #28a745; color: white; }
+    #si:hover { background-color: #218838; }
     #no {
       background-color: #dc3545;
       color: white;
       position: absolute;
       z-index: 10;
     }
-
     #imagenInicial {
       max-width: 80vw;
       max-height: 50vh;
@@ -82,37 +69,52 @@
       box-shadow: 0 0 15px rgba(255,255,255,0.5);
       margin-bottom: 20px;
     }
-
+    #imagenTransicion {
+      display: none;
+      max-width: 80vw;
+      max-height: 40vh;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(255,255,255,0.5);
+    }
     #collage {
       display: none;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));  
       gap: 10px;
       max-width: 90vw;
       margin-top: 20px;
       z-index: 10;
+      animation: aparecer 1s ease-out;
     }
-
     #collage img {
       width: 100%;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(255,255,255,0.3);
     }
+    @keyframes aparecer {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    #imagenTransicion {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .imgTrans {
+      max-width: 150px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(255,255,255,0.4);
+    }
   </style>
-  <link rel="manifest" href="manifest.json" />
-<meta name="theme-color" content="#ff69b4" />
-
 </head>
 <body>
   <h1>¿Quieres ser mi novia?</h1>
-
-  <!-- Imagen inicial -->
   <img id="imagenInicial" src="gato dudoso.jpg" alt="Imagen inicial" />
-
-  <!-- Botones -->
+  <div id="imagenTransicion" style="display: none;"></div>
   <button id="si">Sí</button>
   <button id="no">No</button>
-
-  <!-- Collage -->
   <div id="collage">
     <img src="amor1.jpg" alt="Foto 1" />
     <img src="amor2.jpg" alt="Foto 2" />
@@ -121,42 +123,71 @@
     <img src="amor5.jpg" alt="Foto 5" />
     <img src="amor6.jpg" alt="Foto 6" />
   </div>
-
-  <!-- Música -->
   <audio id="musica" src="ENAMORADO DE UN ÁNGEL.mp3"></audio>
-
-  <!-- Corazones flotantes -->
+  <audio id="musicaTriste" src="triste.mp3"></audio>
   <div id="corazones"></div>
-
   <script>
     const botonNo = document.getElementById('no');
     const botonSi = document.getElementById('si');
     const imagenInicial = document.getElementById('imagenInicial');
     const collage = document.getElementById('collage');
     const musica = document.getElementById('musica');
+    const musicaTriste = document.getElementById('musicaTriste');
+    const imagenDiv = document.getElementById('imagenTransicion');
 
-    // Botón "No" se escapa
+    let tiempoMaximo = 10000;
+    let puedeMoverse = true;
+    setTimeout(() => {
+      puedeMoverse = false;
+      mostrarSegura();
+    }, tiempoMaximo);
+
     function moverBoton() {
+      if (!puedeMoverse) return;
       const anchoVentana = window.innerWidth;
       const altoVentana = window.innerHeight;
       const botonAncho = botonNo.offsetWidth;
       const botonAlto = botonNo.offsetHeight;
-
       const maxX = anchoVentana - botonAncho - 20;
       const maxY = altoVentana - botonAlto - 20;
-
       const nuevaX = Math.floor(Math.random() * maxX);
       const nuevaY = Math.floor(Math.random() * maxY);
-
       botonNo.style.left = nuevaX + 'px';
       botonNo.style.top = nuevaY + 'px';
     }
 
-    botonNo.addEventListener('mouseenter', moverBoton);
-    botonNo.addEventListener('click', (e) => {
-      e.preventDefault();
-      moverBoton();
-    });
+    function mostrarSegura() {
+      botonNo.textContent = '¿Segura? 😢😔';
+      botonNo.removeEventListener('mouseenter', moverBoton);
+      botonNo.removeEventListener('click', moverBoton);
+      imagenInicial.style.display = 'none';
+      imagenDiv.innerHTML = `
+        <img src="triste1.jpg" class="imgTrans" />
+        <img src="triste2.jpg" class="imgTrans" />
+        <img src="triste3.jpg" class="imgTrans" />
+      `;
+      imagenDiv.style.display = 'flex';
+      musicaTriste.play();
+      botonNo.onclick = () => {
+        botonNo.textContent = 'No, no puedes ponerle que no. Ya eres mi novia ❤️';
+        imagenDiv.innerHTML = `
+          <img src="feliz1.jpg" class="imgTrans" />
+          <img src="feliz2.jpg" class="imgTrans" />
+        `;
+        botonNo.onclick = () => mostrarFinal();
+      };
+    }
+
+    function mostrarFinal() {
+      imagenInicial.style.display = 'none';
+      botonSi.style.display = 'none';
+      botonNo.style.display = 'none';
+      collage.style.display = 'grid';
+      musicaTriste.pause();
+      musicaTriste.currentTime = 0;
+      musica.play();
+      soltarCorazones();
+    }
 
     function posicionInicial() {
       botonNo.style.left = '160px';
@@ -164,8 +195,8 @@
       botonNo.style.transform = 'translateY(-50%)';
     }
     posicionInicial();
+    botonNo.addEventListener('mouseenter', moverBoton);
 
-    // Corazones animados
     function soltarCorazones() {
       const corazones = document.getElementById('corazones');
       setInterval(() => {
@@ -179,25 +210,16 @@
       }, 300);
     }
 
-    // Al hacer clic en "Sí"
-    botonSi.addEventListener('click', () => {
-      imagenInicial.style.display = 'none';
-      botonSi.style.display = 'none';
-      botonNo.style.display = 'none';
-      collage.style.display = 'grid';
-      musica.play();
-      soltarCorazones();
-    });
+    botonSi.addEventListener('click', mostrarFinal);
   </script>
+
   <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(() => console.log('Service Worker registrado'))
-      .catch(error => console.error('Error al registrar el Service Worker:', error));
-  }
-</script>
-  
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log('Service Worker registrado'))
+        .catch(error => console.error('Error al registrar el Service Worker:', error));
+    }
+  </script>
 </body>
 </html>
-
 
